@@ -6,6 +6,8 @@ const Room = (props) => {
   const userStream = useRef();
   const socketRef = useRef();
   const otherUser = useRef();
+  const peerRef  = useRef();
+
 
   useEffect(() => {
     navigator.mediaDevices
@@ -33,6 +35,21 @@ const Room = (props) => {
     userStream.current
       .getTracks()
       .forEach((track) => peerRef.current.addTrack(track, userStream.current));
+  }
+
+
+  function createPeer(userId) {
+    const peer = new RTCPeerConnection({
+        iceServers : [
+            {
+                urls: "stun:stun.stunprotocol.org"
+            },{
+                urls: 'turn:numb.viagenie.ca',
+                cerdential: 'muazkh',
+                username: 'webrtc@live.com'
+            },
+        ]
+    })
   }
 
   return (
