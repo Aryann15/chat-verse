@@ -22,11 +22,18 @@ const Room = (props) => {
           otherUser.current = userId;
         });
 
-        socketRef.curreny.on("user joined", (userId) => {
+        socketRef.current.on("user joined", (userId) => {
           otherUser.current = userId;
         });
       });
   }, []);
+
+  function callUser(userId) {
+    peerRef.current = createPeer(userId);
+    userStream.current
+      .getTracks()
+      .forEach((track) => peerRef.current.addTrack(track, userStream.current));
+  }
 
   return (
     <div>
