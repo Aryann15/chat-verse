@@ -26,6 +26,10 @@ const Room = (props) => {
         socketRef.current.on("user joined", (userId) => {
           otherUser.current = userId;
         });
+
+        socketRef.current.on("offer", handleReceiveCall);
+        socketRef.current.on("answer", handleAnswer);
+        socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
       });
   }, []);
 
@@ -100,6 +104,10 @@ const Room = (props) => {
         };
         socketRef.current.emit("answer", payload);
       });
+  }
+  function handleAnswer(message) {
+    const desc = new RTCSessionDescription(message.sdp);
+    peerRef.current.setRemoteDescription(desc).catch((e) => console.log(e));
   }
 
   return (
