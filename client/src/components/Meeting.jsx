@@ -47,9 +47,16 @@ const Room = (props) => {
                 urls: 'turn:numb.viagenie.ca',
                 cerdential: 'muazkh',
                 username: 'webrtc@live.com'
-            },
+            }
         ]
-    })
+    });
+
+    peer.onicecandidate = handleICECandidateEvent;
+    peer.ontrack = handleTrackEvent;
+    peer.onnegotiationneeded= handleNegotiationNeededEvent(userId);
+
+    return peer;
+    
   }
 
   return (
