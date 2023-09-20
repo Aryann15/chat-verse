@@ -128,6 +128,10 @@ const Room = (props) => {
     .catch(e => console.log(e));
   }
 
+  function handleTrackEvent (e) {
+    partnerVideo.current.srcObject = e.streams[0];
+  };
+
   return (
     <div>
       <video autoPlay ref={userVideo} />
