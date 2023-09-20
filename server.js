@@ -14,6 +14,12 @@ io.on("connection", (socket) => {
     } else {
       rooms[roomId] = [socket.id];
     }
+
+    const otherUser = rooms[roomId].find(id=> id !==socket.id)
+    if (otherUser){
+        socket.emit("other user",otherUser);
+        socket.to (otherUser).emit ("user joined", socket.id); 
+    }
   });
 });
 
