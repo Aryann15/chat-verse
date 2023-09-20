@@ -110,6 +110,17 @@ const Room = (props) => {
     peerRef.current.setRemoteDescription(desc).catch((e) => console.log(e));
   }
 
+  function handleICECandidateEvent(e) {
+    if (e.candidate) {
+      const payload = {
+        target: otherUser.current,
+        candidate: e.candidate,
+      };
+
+      socketRef.current.emit("ice-candidate", payload);
+    }
+  }
+
   return (
     <div>
       <video autoPlay ref={userVideo} />
