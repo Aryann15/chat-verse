@@ -6,8 +6,7 @@ const Room = (props) => {
   const userStream = useRef();
   const socketRef = useRef();
   const otherUser = useRef();
-  const peerRef  = useRef();
-
+  const peerRef = useRef();
 
   useEffect(() => {
     navigator.mediaDevices
@@ -37,26 +36,38 @@ const Room = (props) => {
       .forEach((track) => peerRef.current.addTrack(track, userStream.current));
   }
 
-
   function createPeer(userId) {
     const peer = new RTCPeerConnection({
-        iceServers : [
-            {
-                urls: "stun:stun.stunprotocol.org"
-            },{
-                urls: 'turn:numb.viagenie.ca',
-                cerdential: 'muazkh',
-                username: 'webrtc@live.com'
-            }
-        ]
+      iceServers: [
+        {
+          urls: "stun:stun.stunprotocol.org",
+        },
+        {
+          urls: "turn:numb.viagenie.ca",
+          cerdential: "muazkh",
+          username: "webrtc@live.com",
+        },
+      ],
     });
 
     peer.onicecandidate = handleICECandidateEvent;
     peer.ontrack = handleTrackEvent;
-    peer.onnegotiationneeded= handleNegotiationNeededEvent(userId);
+    peer.onnegotiationneeded = handleNegotiationNeededEvent(userId);
 
     return peer;
-    
+  }
+
+  function handleNegotiationNeededEvent(userId){
+    peerRef.current.createOffer().then(offer => {
+        return peerRef.current.setLocalDescription(offer);
+    }).then(() => {
+        const payload ={
+            target: userId,
+            caller: socketRef.current.id,
+            sdp: peerRef.current.localDescription
+        }
+        socketRef.current.emit("offer",payload);
+    }).catch( e => console.log(e));
   }
 
   return (
