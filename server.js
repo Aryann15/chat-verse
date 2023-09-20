@@ -15,11 +15,18 @@ io.on("connection", (socket) => {
       rooms[roomId] = [socket.id];
     }
 
-    const otherUser = rooms[roomId].find(id=> id !==socket.id)
-    if (otherUser){
-        socket.emit("other user",otherUser);
-        socket.to (otherUser).emit ("user joined", socket.id); 
+    const otherUser = rooms[roomId].find((id) => id !== socket.id);
+    if (otherUser) {
+      socket.emit("other user", otherUser);
+      socket.to(otherUser).emit("user joined", socket.id);
     }
+  });
+  socket.on("offer", (payload) => {
+    io.to(payload.target).emit("offer", payload);
+  });
+
+  socket.io("answer", (payload) => {
+    io.to(payload.target).emit("answer", payload);
   });
 });
 
