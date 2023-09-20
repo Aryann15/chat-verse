@@ -28,6 +28,10 @@ io.on("connection", (socket) => {
   socket.io("answer", (payload) => {
     io.to(payload.target).emit("answer", payload);
   });
+
+  socket.io("ice-candidate", (incoming) => {
+    io.to(incoming.target).emit("ice-candidate", incoming.candidate);
+  });
 });
 
 server.listen(8000, () => {
